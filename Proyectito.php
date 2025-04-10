@@ -36,11 +36,13 @@
             header("Location: Proyectito.php?mensaje=registroGuardado");
             exit();
         }
-
-
-
-
     }
+
+
+    $stm_listar = $conexion->prepare("SELECT * FROM gastos");
+    $stm_listar->execute();
+    $Resultado = $stm_listar->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 
@@ -90,6 +92,16 @@
                 <th colspan="2">Aciones</th>
             </thead>
             <tbody>
+                <?php foreach($Resultado  as $registro):?>
+                    <tr>
+                    <td><?php echo $registro['nombre']?></td>
+                    <td><?php echo $registro['tipoGasto']?></td>
+                    <td><?php echo $registro['valorGasto']?></td>
+
+                    <?php endforeach; ?>
+
+
+                    </tr>
 
             </tbody>
 
