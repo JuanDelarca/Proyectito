@@ -1,3 +1,50 @@
+<?php
+
+    require 'Conexion.php';
+
+
+    $error="";
+    $hay_post="";
+    $codigoGasto=null;
+    $nombre="";
+    $tipoGasto="";
+    $valorGasto="";
+
+    if(isset($_REQUEST['submit1'])){
+        $hay_post =true;
+        $nombre = isset($_REQUEST['txtNombre'])? $_REQUEST['txtNombre'] : "";
+        $tipoGasto = isset($_REQUEST['cmbtipoGasto'])? $_REQUEST['cmbtipoGasto'] : "";
+        $valorGasto = isset($_REQUEST['txtGasto'])? $_REQUEST['txtGasto'] :"";
+
+        if(!empty($nombre)){
+            $nombre = preg_replace("/[^a-zA-ZáéíóúÁÉÍÓÚ]/u","",$nombre);
+        }
+        else{
+            $error .= "El nombre no puede esta vácio<br>";
+        }
+
+        if($tipoGasto == ""){
+            $error .= "Selecione un gasto<br>"; 
+        }
+        if($valorGasto == ""){
+            $error .="Ponga una cantidad<br>";
+        }
+
+        if(!$error){
+            $stm_insertarRegistro = $conexion->prepare("INSERT INTO gastos(nombre, tipoGasto, valorGasto) VALUES(:nombre, :tipoGasto, :valorGasto)");
+            $stm_insertarRegistro->execute([':nombre'=>$nombre, ':tipoGasto'=>$tipoGasto, ':valorGasto'=>$valorGasto]);
+            header("Location: Proyectito.php?mensaje=registroGuardado");
+            exit();
+        }
+
+
+
+
+    }
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,26 +58,45 @@
 
     <h1 class="text-center">Proyectito</h1>
     <div class="container">
-    <form action="" method="post">
-            <input type="hidden" name="id" value="">
-            <label class="form-label" for="nombre">Nombre Completo:</label>
-            <input class="form-control" type="text" name="txtNombre" id=""><br>
+        <form action="<?php echo $_SERVER['PHP_SELF']?>" method="post">
+            <input type="hidden" name="id" value="<?php echo isset($codigoGasto)? $codigoGasto :""?>">
+            <label class="form-label" for="nombre">Nombre Persona:</label>
+            <input class="form-control" type="text" name="txtNombre" id="nombre" value="<?php echo isset($nombre)? $nombre : ""?>"><br>
         
-            <label class="form-label" for="pais">Tipo de gasto</label>
-            <select class="form-select" name="cmbPais" id="pais">
+            <label class="form-label" for="tipoGasto">Tipo de gasto</label>
+            <select class="form-select" name="cmbtipoGasto" id="tipoGasto">
                 <option value="">Seleciones el tipo de gasto</option>
-                <option value="Alimentacion">Alimentacion</option>
-                <option value="Transporte">Transporte</option>
-                <option value="Salud">Salud</option>
-                <option value="Universidad">Universidad</option>
+                <option value="Alimentación" <?php echo($tipoGasto=='Alimentación')? 'selected' : ''?>>Alimentación</option>
+                <option value="Transporte" <?php echo($tipoGasto=='Transporte')? 'selected' : ''?>>Transporte</option>
+                <option value="Salud" <?php echo($tipoGasto=='Salud')? 'selected' : ''?>>Salud</option>
+                <option value="Cine" <?php echo($tipoGasto=='Cine')? 'selected' : ''?>>Cine</option>
+                <option value="Provisión"<?php echo($tipoGasto=='Provisión')? 'selected' : ''?>>Provisión</option>
+                <option value="Universidad"<?php echo($tipoGasto=='Universidad')? 'selected' : ''?>>Universidad</option>
+                <option value="Educación" <?php echo($tipoGasto=='Educación')? 'selected' : ''?>>Educación</option>
+                <option value="Entretenimiento" <?php echo($tipoGasto=='Entrenimiento')? 'selected' : ''?>>Entretenimiento</option>
             </select><br>
             <label for="form-label"for="gasto">Valor del Gasto</label>
-            <input class="form-control" type="num" name="txtGasto" id=""> <br>
-            
-            <input class="btn btn-primary" type="submit" value="Enviar" name="submit1">
-           
-           
+            <input class="form-control" type="number" name="txtGasto" id=""> <br>
+            <input class="btn btn-primary" type="submit" value="Enviar" name="submit1"> <br>
         </form>
+        
+           
+
+        <table class="table table-bordered table-hover"><br>
+            <thead>
+                <th>Nombre</th>
+                <th>Tipo de gasto</th>
+                <th>Valor</th>
+                <th colspan="2">Aciones</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+
+
+
     
      
     </div>
