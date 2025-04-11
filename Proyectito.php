@@ -9,6 +9,7 @@
     $nombre="";
     $tipoGasto="";
     $valorGasto="";
+    $Resultado = []; 
 
     if(isset($_REQUEST['submit1'])){
         $hay_post =true;
@@ -97,12 +98,29 @@
             exit(); 
         }
     }
+
+
+
+    
+
+    if (isset($_REQUEST['buscar']) && !empty(trim($_REQUEST['buscar']))) {
+        $buscar = '%' . trim($_REQUEST['buscar']) . '%';
+        $stm_listar = $conexion->prepare("SELECT * FROM gastos 
+            WHERE nombre LIKE :busqueda 
+            OR tipoGasto LIKE :busqueda 
+            OR valorGasto LIKE :busqueda");
+        $stm_listar->execute([':busqueda' => $buscar]);
+    } else {
+        $stm_listar = $conexion->prepare("SELECT * FROM gastos");
+        $stm_listar->execute();
+    }
+    $Resultado = $stm_listar->fetchAll(PDO::FETCH_ASSOC);
+    
+    
     
 
 
-    $stm_listar = $conexion->prepare("SELECT * FROM gastos");
-    $stm_listar->execute();
-    $Resultado = $stm_listar->fetchAll(PDO::FETCH_ASSOC);
+   
 
 
 
@@ -163,6 +181,16 @@
             
         <?php endif; ?>
         <br>
+
+
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" class="mb-3">
+        <label for="buscar">Buscar:</label>
+        <input type="text" id="buscar" name="buscar" placeholder="Escribe tu búsqueda aquí" class="form-control d-inline-block w-auto" value="<?php echo isset($_REQUEST['buscar']) ? htmlspecialchars($_REQUEST['buscar']) : ''; ?>">
+        <button type="submit" class="btn btn-success">Buscar</button>
+        </form>
+
+        <br>
+
 
            
 
