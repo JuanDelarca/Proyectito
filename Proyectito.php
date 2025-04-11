@@ -39,6 +39,30 @@
     }
 
 
+
+    if(isset($_REQUEST['id']) && isset($_REQUEST['op'])){
+        $id = $_REQUEST['id'];
+        $op = $_REQUEST['op'];
+
+        if($op == 'm'){
+            $stm_selecionarRegistro = $Conexion->prepare("select * from gastos where codigoGasto=:id");
+            $stm_selecionarRegistro->execute([':id'=>$id]);
+            $Resultado = $stm_selecionarRegistro->fetch();
+            $codigoGasto = $Resultado['codigoGasto'];
+            $nombre = $Resultado['nombre'];
+            $tipoGasto = $Resultado['tipoGasto'];
+            $valorGasto = $Resultado['valorGasto'];
+
+        }
+        else if($op == 'e'){
+            $stm_eliminar = $conexion->prepare("delete from gastos where codigoGasto=:id");
+            $stm_eliminar->execute([':id'=>$id]);
+            header("Location: Proyectito.php?mensaje=registroeliminado");
+            exit();
+        }
+    }
+
+
     $stm_listar = $conexion->prepare("SELECT * FROM gastos");
     $stm_listar->execute();
     $Resultado = $stm_listar->fetchAll(PDO::FETCH_ASSOC);
@@ -81,7 +105,17 @@
             <input class="form-control" type="number" name="txtGasto" id=""> <br>
             <input class="btn btn-primary" type="submit" value="Enviar" name="submit1"> <br>
         </form>
-        
+        <br>
+
+        <?php if($error):  ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo "<p>$error</p>"; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+        <?php endif; ?>
+        <br>
+
            
 
         <table class="table table-bordered table-hover"><br>
@@ -98,6 +132,9 @@
                     <td><?php echo $registro['tipoGasto']?></td>
                     <td><?php echo $registro['valorGasto']?></td>
 
+
+                    <td><a class="btn btn-primary" href="Proyectito.php?id=<?php echo $registro['codigoGasto'] ?>&op=m">Modificar</a></td>
+                    <td><a class="btn btn-danger" href="Proyectito.php?id=<?php echo $registro['codigoGasto'] ?>&op=e" onclick="return confirm('Desea eliminar el registro');">Eliminar</a></td>
                     <?php endforeach; ?>
 
 
