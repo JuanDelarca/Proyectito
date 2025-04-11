@@ -39,28 +39,65 @@
     }
 
 
-
-    if(isset($_REQUEST['id']) && isset($_REQUEST['op'])){
-        $id = $_REQUEST['id'];
-        $op = $_REQUEST['op'];
-
-        if($op == 'm'){
-            $stm_selecionarRegistro = $Conexion->prepare("select * from gastos where codigoGasto=:id");
-            $stm_selecionarRegistro->execute([':id'=>$id]);
-            $Resultado = $stm_selecionarRegistro->fetch();
-            $codigoGasto = $Resultado['codigoGasto'];
-            $nombre = $Resultado['nombre'];
-            $tipoGasto = $Resultado['tipoGasto'];
-            $valorGasto = $Resultado['valorGasto'];
-
+    
+    if(isset($_REQUEST['submit2'])){
+        $hay_post = true;
+        $nombre = isset($_REQUEST['txtNombre'])? $_REQUEST['txtNombre'] : "";
+        $tipoGasto = isset($_REQUEST['cmbtipoGasto'])? $_REQUEST['cmbtipoGasto'] : "";
+        $valorGasto = isset($_REQUEST['txtGasto'])? $_REQUEST['txtGasto'] :"";
+        $codigoGasto = isset($_REQUEST['id']) ? $_REQUEST['id'] : null; // ← ESTA LÍNEA FALTABA
+    
+        if(!empty($nombre)){
+            $nombre = preg_replace("/[^a-zA-ZáéíóúÁÉÍÓÚ]/u","", $nombre);
+        } else {
+            $error .= "El nombre no puede estar vacío<br>";
         }
-        else if($op == 'e'){
-            $stm_eliminar = $conexion->prepare("delete from gastos where codigoGasto=:id");
-            $stm_eliminar->execute([':id'=>$id]);
-            header("Location: Proyectito.php?mensaje=registroeliminado");
+    
+        if($tipoGasto == ""){
+            $error .= "Seleccione un gasto<br>"; 
+        }
+        if($valorGasto == ""){
+            $error .= "Ponga una cantidad<br>";
+        }
+    
+        if(!$error){
+            $stm_modificar = $conexion->prepare("UPDATE gastos SET nombre = :nombre, tipoGasto = :tipoGasto, valorGasto = :valorGasto WHERE codigoGasto = :id");
+            $stm_modificar->execute([
+                ':nombre' => $nombre,
+                ':tipoGasto' => $tipoGasto,
+                ':valorGasto' => $valorGasto,
+                ':id' => $codigoGasto 
+            ]);
+            header("Location: Proyectito.php?mensaje=registroModificado");
             exit();
         }
     }
+    
+
+
+    
+    if(isset($_REQUEST['id']) && isset($_REQUEST['op'])){
+        $id = $_REQUEST['id'];
+        $op = $_REQUEST['op'];
+    
+        if($op == 'm'){
+            $stm_selecionarRegistro = $conexion->prepare("SELECT * FROM gastos WHERE codigoGasto=:codigoGasto");
+            $stm_selecionarRegistro->execute([':codigoGasto' => $id]);
+            $fila = $stm_selecionarRegistro->fetch();
+            if ($fila) {
+                $codigoGasto = $fila['codigoGasto'];
+                $nombre = $fila['nombre'];
+                $tipoGasto = $fila['tipoGasto'];
+                $valorGasto = $fila['valorGasto'];
+            }
+        } else if($op == 'e'){
+            $stm_eliminar = $conexion->prepare("DELETE FROM gastos WHERE codigoGasto=:codigoGasto");
+            $stm_eliminar->execute([':codigoGasto' => $id]);
+            header("Location: Proyectito.php?mensaje=registroeliminado");
+            exit(); 
+        }
+    }
+    
 
 
     $stm_listar = $conexion->prepare("SELECT * FROM gastos");
@@ -103,7 +140,18 @@
             </select><br>
             <label for="form-label"for="gasto">Valor del Gasto</label>
             <input class="form-control" type="number" name="txtGasto" id=""> <br>
-            <input class="btn btn-primary" type="submit" value="Enviar" name="submit1"> <br>
+            
+
+            <?php
+                if($codigoGasto){
+                    echo '<input class="btn btn-dark" type="submit" value="Modificar" name="submit2">';
+                }else {
+
+                    echo '<input class="btn btn-primary" type="submit" value="Enviar" name="submit1">';
+            
+                }
+                ?>
+            <a class="btn btn-secondary" href="index.php">Cancelar</a>
         </form>
         <br>
 
