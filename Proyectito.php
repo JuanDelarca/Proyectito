@@ -141,15 +141,15 @@
 </head>
 <body>
 
-    <h1 class="text-center">Proyectito</h1>
+    <h1 class="text-center fw-bolder">Proyectito</h1>
     <div class="container">
         <form action="<?php echo $_SERVER['PHP_SELF']?>" method="post">
             <input type="hidden" name="id" value="<?php echo isset($codigoGasto)? $codigoGasto :""?>">
-            <label class="form-label" for="nombre">Nombre Persona:</label>
-            <input class="form-control" type="text" name="txtNombre" id="nombre" value="<?php echo isset($nombre)? $nombre : ""?>"><br>
+            <label class="form-label fw-bolder" for="nombre">Nombre Persona:</label> <br>
+            <input class="form-control border-primary-subtle" type="text" name="txtNombre" id="nombre" value="<?php echo isset($nombre)? $nombre : ""?>"><br>
         
-            <label class="form-label" for="tipoGasto">Tipo de gasto</label>
-            <select class="form-select" name="cmbtipoGasto" id="tipoGasto">
+            <label class="form-label fw-bolder" for="tipoGasto">Tipo de gasto:</label>
+            <select class="form-select border-primary-subtle" name="cmbtipoGasto" id="tipoGasto">
             <option value="">Seleccione el tipo de gasto</option>
             <option value="Alimentación" <?php echo ($tipoGasto == 'Alimentación') ? 'selected' : ''; ?>>Alimentación</option>
             <option value="Transporte" <?php echo ($tipoGasto == 'Transporte') ? 'selected' : ''; ?>>Transporte</option>
@@ -161,9 +161,8 @@
             <option value="Entretenimiento" <?php echo ($tipoGasto == 'Entretenimiento') ? 'selected' : ''; ?>>Entretenimiento</option>
             </select><br>
 
-
-            <label for="form-label"for="valorGasto">Valor del Gasto</label>
-            <input class="form-control" type="number" name="txtGasto" id="gasto" value="<?php echo isset($valorGasto)? $valorGasto : '' ?>"> <br>
+            <label class= "fw-bolder"for="form-label "for="valorGasto">Valor del Gasto:</label>
+            <input class="form-control border-primary-subtle" type="number" name="txtGasto" id="gasto" value="<?php echo isset($valorGasto)? $valorGasto : '' ?>"> <br>
              <br>
             
 
@@ -191,7 +190,7 @@
 
 
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" class="mb-3">
-        <label for="buscar">Buscar:</label>
+        <label class="fw-bolder"for="buscar">Buscar:</label>
         <input type="text" id="buscar" name="buscar" placeholder="Escribe tu búsqueda aquí" class="form-control d-inline-block w-auto" value="<?php echo isset($_REQUEST['buscar']) ? htmlspecialchars($_REQUEST['buscar']) : ''; ?>">
         <button type="submit" class="btn btn-success">Buscar</button>
         </form>
@@ -223,14 +222,14 @@
             }
         ?>
 
-        <table class="table table-bordered table-hover"><br>
-            <thead>
+        <table class="table table-bordered table-hover border "><br>
+            <thead class="border border-black table-success ">
                 <th>Nombre</th>
                 <th>Tipo de gasto</th>
                 <th>Valor</th>
                 <th colspan="2">Aciones</th>
             </thead>
-            <tbody>
+            <tbody class="table-group-divider border border-black">
                 <?php foreach($Resultado  as $registro):?>
                     <tr>
                     <td><?php echo $registro['nombre']?></td>
