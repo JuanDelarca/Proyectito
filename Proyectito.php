@@ -30,6 +30,12 @@
         if($valorGasto == ""){
             $error .="Ponga una cantidad<br>";
         }
+        if($valorGasto < 0){
+            $error .="Ponga un numero positivo<br>";
+        }
+
+        
+        
 
         if(!$error){
             $stm_insertarRegistro = $conexion->prepare("INSERT INTO gastos(nombre, tipoGasto, valorGasto) VALUES(:nombre, :tipoGasto, :valorGasto)");
@@ -59,6 +65,9 @@
         }
         if($valorGasto == ""){
             $error .= "Ponga una cantidad<br>";
+        }
+        if($valorGasto < 0){
+            $error .="Ponga un numero positivo<br>";
         }
     
         if(!$error){
@@ -115,16 +124,11 @@
         $stm_listar->execute();
     }
     $Resultado = $stm_listar->fetchAll(PDO::FETCH_ASSOC);
-    
-    
-    
 
-
-   
-
-
-
-
+    $totalGastos = 0;
+    foreach ($Resultado as $registro) {
+    $totalGastos += $registro['valorGasto'];
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -146,18 +150,21 @@
         
             <label class="form-label" for="tipoGasto">Tipo de gasto</label>
             <select class="form-select" name="cmbtipoGasto" id="tipoGasto">
-                <option value="">Seleciones el tipo de gasto</option>
-                <option value="Alimentación" <?php echo($tipoGasto=='Alimentación')? 'selected' : ''?>>Alimentación</option>
-                <option value="Transporte" <?php echo($tipoGasto=='Transporte')? 'selected' : ''?>>Transporte</option>
-                <option value="Salud" <?php echo($tipoGasto=='Salud')? 'selected' : ''?>>Salud</option>
-                <option value="Cine" <?php echo($tipoGasto=='Cine')? 'selected' : ''?>>Cine</option>
-                <option value="Provisión"<?php echo($tipoGasto=='Provisión')? 'selected' : ''?>>Provisión</option>
-                <option value="Universidad"<?php echo($tipoGasto=='Universidad')? 'selected' : ''?>>Universidad</option>
-                <option value="Educación" <?php echo($tipoGasto=='Educación')? 'selected' : ''?>>Educación</option>
-                <option value="Entretenimiento" <?php echo($tipoGasto=='Entrenimiento')? 'selected' : ''?>>Entretenimiento</option>
+            <option value="">Seleccione el tipo de gasto</option>
+            <option value="Alimentación" <?php echo ($tipoGasto == 'Alimentación') ? 'selected' : ''; ?>>Alimentación</option>
+            <option value="Transporte" <?php echo ($tipoGasto == 'Transporte') ? 'selected' : ''; ?>>Transporte</option>
+            <option value="Salud" <?php echo ($tipoGasto == 'Salud') ? 'selected' : ''; ?>>Salud</option>
+            <option value="Cine" <?php echo ($tipoGasto == 'Cine') ? 'selected' : ''; ?>>Cine</option>
+            <option value="Provisión" <?php echo ($tipoGasto == 'Provisión') ? 'selected' : ''; ?>>Provisión</option>
+            <option value="Universidad" <?php echo ($tipoGasto == 'Universidad') ? 'selected' : ''; ?>>Universidad</option>
+            <option value="Educación" <?php echo ($tipoGasto == 'Educación') ? 'selected' : ''; ?>>Educación</option>
+            <option value="Entretenimiento" <?php echo ($tipoGasto == 'Entretenimiento') ? 'selected' : ''; ?>>Entretenimiento</option>
             </select><br>
-            <label for="form-label"for="gasto">Valor del Gasto</label>
-            <input class="form-control" type="number" name="txtGasto" id=""> <br>
+
+
+            <label for="form-label"for="valorGasto">Valor del Gasto</label>
+            <input class="form-control" type="number" name="txtGasto" id="gasto" value="<?php echo isset($valorGasto)? $valorGasto : '' ?>"> <br>
+             <br>
             
 
             <?php
@@ -169,7 +176,7 @@
             
                 }
                 ?>
-            <a class="btn btn-secondary" href="index.php">Cancelar</a>
+            <a class="btn btn-secondary" href="Proyectito.php">Cancelar</a>
         </form>
         <br>
 
@@ -239,6 +246,12 @@
                     </tr>
 
             </tbody>
+            <tr>
+            <td colspan="2" class="text-end"><strong>Total acumulado:</strong></td>
+            <td><strong><?php echo number_format($totalGastos, 2); ?></strong></td>
+            <td colspan="2"></td>
+            </tr>
+
 
         </table>
 
