@@ -39,7 +39,7 @@
     }
 
 
-    
+
     if(isset($_REQUEST['submit2'])){
         $hay_post = true;
         $nombre = isset($_REQUEST['txtNombre'])? $_REQUEST['txtNombre'] : "";
@@ -165,6 +165,28 @@
         <br>
 
            
+
+        <?php
+            if(isset($_REQUEST['mensaje'])){
+                $mensaje = $_REQUEST['mensaje'];
+        ?>
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <?php
+                    if($mensaje=='registroGuardado'){
+                        echo "<p>Registro guardado.</p>";
+                    }
+                    elseif($mensaje == 'registroModificado'){
+                        echo "<p>Registro modificado.</p>";
+                    }
+                    elseif($mensaje=='registroEliminado'){
+                        echo "<p>Registro eliminado.</p>";
+                    }
+                ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php
+            }
+        ?>
 
         <table class="table table-bordered table-hover"><br>
             <thead>
